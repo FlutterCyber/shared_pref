@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:shared_pref/employee_page.dart';
+import 'package:shared_pref/news_page.dart';
 import 'package:shared_pref/user_page.dart';
 
 void main() {
@@ -17,13 +17,11 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: UserPage(),
+      home: const NewsPage(),
       routes: {
-        UserPage.id:(context)=> const UserPage(),
-        EmployeePage.id:(context)=> const EmployeePage(),
-
+        UserPage.id: (context) => const UserPage(),
+        NewsPage.id: (context) => const NewsPage(),
       },
     );
   }
 }
-
