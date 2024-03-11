@@ -17,10 +17,10 @@ class News {
         title = map['title'],
         body = map['body'];
 
-  Map<String, dynamic> toJson() => {
-        "userId": userId,
-        "id": id,
-        "title": title,
-        "body": body,
+  Map<String, String> toJson() => {
+        "userId": userId.toString(),
+        "id": id.toString(),
+        "title": title.toString(),
+        "body": body.toString(),
       };
 }

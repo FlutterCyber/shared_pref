@@ -14,13 +14,29 @@ class NewsPage extends StatefulWidget {
 
 class _NewsPageState extends State<NewsPage> {
   var logger = Logger();
+  List<News> items = [];
+  var isLoading = false;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    //getInfos();
-    postInfo();
+    myParsing();
+  }
+
+  void myParsing() async {
+    setState(() {
+      isLoading = true;
+    });
+    var response = await NetworkService.GET(
+        NetworkService.API_GET, NetworkService.paramsGET());
+
+    if (response != null) {
+      setState(() {
+        items = NetworkService.parsingResponse(response);
+        isLoading = false;
+      });
+    }
   }
 
   Future<void> getInfos() async {
@@ -33,8 +49,8 @@ class _NewsPageState extends State<NewsPage> {
   postInfo() {
     News news =
         News(userId: 102, id: 103, title: "Shoqosim", body: "Abdujabbor");
-    NetworkService.POST(NetworkService.API_POST,
-            NetworkService.paramsPOST(news: news))
+    NetworkService.POST(
+            NetworkService.API_POST, NetworkService.paramsPOST(news: news))
         .then((response) => {
               logger.i(response),
             });
@@ -50,6 +66,59 @@ class _NewsPageState extends State<NewsPage> {
           style: TextStyle(color: Colors.white),
         ),
         centerTitle: true,
+        actions: [
+          IconButton(
+              onPressed: () {
+                myParsing();
+              },
+              icon: Icon(
+                Icons.refresh,
+                color: Colors.white,
+              ))
+        ],
+      ),
+      body: Stack(
+        children: [
+          isLoading
+              ? Center(child: const CircularProgressIndicator())
+              : ListView.builder(
+                  itemCount: items.length,
+                  itemBuilder: (ctx, index) {
+                    return responseItems(items[index]);
+                  }),
+        ],
+      ),
+    );
+  }
+
+  Widget responseItems(News news) {
+    return Container(
+      margin: const EdgeInsets.all(10),
+      padding: const EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+        color: Colors.grey.shade300,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            news.title.toString().toUpperCase(),
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 20,
+            ),
+          ),
+          const SizedBox(
+            height: 10,
+          ),
+          Text(
+            news.body.toString(),
+            style: const TextStyle(
+              fontSize: 16,
+            ),
+          ),
+        ],
       ),
     );
   }

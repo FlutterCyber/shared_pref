@@ -22,7 +22,7 @@ class NetworkService {
   /// request methods
   static Future<String?> GET(String api, Map<String, String> params) async {
     var uri = Uri.https(BASE, api, params);
-    var response = await get(uri, headers: header);
+    Response response = await get(uri, headers: header);
     if (response.statusCode == 200) {
       return response.body;
     }
@@ -64,29 +64,25 @@ class NetworkService {
   }
 
   static Map<String, String> paramsPOST({required News news}) {
-    Map<String, String> params = {};
-    params.addAll({
-      'userId': news.userId.toString(),
-      "id": news.id.toString(),
-      "title": news.title!,
-      "body": news.body!,
-    });
-    return params;
+    News mynews = News(
+        userId: news.userId, id: news.id, title: news.title, body: news.body);
+    return mynews.toJson();
   }
 
   static Map<String, String> paramsPUT(News news) {
-    Map<String, String> params = {};
-    params.addAll({
-      'userId': news.userId.toString(),
-      "id": news.id.toString(),
-      "title": news.title!,
-      "body": news.body!,
-    });
-    return params;
+    News mynews = News(
+        userId: news.userId, id: news.id, title: news.title, body: news.body);
+    return mynews.toJson();
   }
 
   static Map<String, String> paramsDELETE() {
     Map<String, String> params = {};
     return params;
+  }
+
+  static List<News> parsingResponse(String response) {
+    dynamic json = jsonDecode(response);
+    var data = List<News>.from(json.map((mp) => News.fromJson(mp)));
+    return data;
   }
 }
